@@ -10,5 +10,6 @@ func init() {
     web.Router("/", &controllers.MainController{})
 	web.Router("/books", &controllers.BookController{}, "get:GetAll")
 	web.Router("/books/:id" ,&controllers.BookController{}, "get:GetOne")
+	web.Router("/books",&controllers.BookController{},"post:Create")
 
 }
