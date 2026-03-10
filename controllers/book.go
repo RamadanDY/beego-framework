@@ -42,73 +42,34 @@ func (c  *BookController ) GetOne(){
 //json
 
 
+
+
 func (c *BookController) Create() {
 	var book models.Book
 
-	//converting the data into json ie parsing the request 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody,&book)
+	// Unmarshal JSON from request body
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &book)
 	if err != nil {
-		///we send a status code of 400 if we hit this block or if there is an error 
-		c.Ctx.Output.SetStatus(400)
-		c.Data["json"] = map[string]string{"error:":"invalid json"}
+		// Send 400 Bad Request with JSON error message
+		c.Ctx.Output.SetStatus(400) // set HTTP status code
+		c.Data["json"] = map[string]string{"error": "Invalid JSON"}
 		c.ServeJSON()
 		return
 	}
-	if book.Author == "" || book.ID == ""  || book.Title == "" || book.Quantity == 0 {
-		c.Ctx.Output.SetStatus(400)
-		c.Data["json"] = map[string]string{"error:":"empty fields"}
-		c.ServeJSON()
-		return
 
+	// Optional: basic validation
+	if book.ID == "" || book.Title == "" || book.Author == "" {
+		c.Ctx.Output.SetStatus(400)
+		c.Data["json"] = map[string]string{"error": "Missing required fields"}
+		c.ServeJSON()
+		return
 	}
-	models.Books = append(models.Books,book)
+
+	// Add book to the slice
+	models.Books = append(models.Books, book)
+
+	// Return the newly created book as JSON
 	c.Data["json"] = book
 	c.ServeJSON()
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// func (c *BookController) Create() {
-// 	var book models.Book
-
-// 	// Unmarshal JSON from request body
-// 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &book)
-// 	if err != nil {
-// 		// Send 400 Bad Request with JSON error message
-// 		c.Ctx.Output.SetStatus(400) // set HTTP status code
-// 		c.Data["json"] = map[string]string{"error": "Invalid JSON"}
-// 		c.ServeJSON()
-// 		return
-// 	}
-
-// 	// Optional: basic validation
-// 	if book.ID == "" || book.Title == "" || book.Author == "" {
-// 		c.Ctx.Output.SetStatus(400)
-// 		c.Data["json"] = map[string]string{"error": "Missing required fields"}
-// 		c.ServeJSON()
-// 		return
-// 	}
-
-// 	// Add book to the slice
-// 	models.Books = append(models.Books, book)
-
-// 	// Return the newly created book as JSON
-// 	c.Data["json"] = book
-// 	c.ServeJSON()
-// }
 
